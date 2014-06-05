@@ -1,6 +1,8 @@
 #!/usr/bin/python2
+import pynotify
 import feedparser
 import commands
+pynotify.init("Basic")
 community = feedparser.parse('https://www.archlinux.org/feeds/packages/x86_64/feed/')
 core = feedparser.parse('https://www.archlinux.org/feeds/packages/x86_64/core/')
 extra = feedparser.parse('https://www.archlinux.org/feeds/packages/x86_64/extra/')
@@ -22,15 +24,23 @@ loopFeed(multilib)
 for i in range(0, len(localpac)):
     localpacname.append(localpac[i][:localpac[i].index(' ')])
 
-#print
-#print localpacname
 for package in packages:
     rpack = package[:package.index(" ")]
-    #print blah,
     if rpack in localpacname:
         remote, local = package[:package.rindex(" ")], localpac[localpacname.index(rpack)]
-        #print remote, local
         rvnum = remote[remote.rindex(" "):]
         lvnum = local[local.rindex(" "):]
+        count = 0
+        updates =""
         if lvnum != rvnum:
-            print rpack + " " + lvnum + " => " + rvnum
+            count = count + 1
+            updates = updates + rpack + " " + lvnum + " => " + rvnum + "\n"
+if count == 0:
+    n = pynotify.Notification("Move along, nothing to see here",
+    'No updates for today, you should still sudo pacman -Sy for \
+older updates')
+    n.show()
+else:
+    n = pynotify.Notification("Updates availiable", updates)
+    n.show()
+
