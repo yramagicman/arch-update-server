@@ -6,8 +6,9 @@ core = feedparser.parse('https://www.archlinux.org/feeds/packages/x86_64/core/')
 extra = feedparser.parse('https://www.archlinux.org/feeds/packages/x86_64/extra/')
 multilib = feedparser.parse('https://www.archlinux.org/feeds/packages/x86_64/multilib/')
 packages = commands.getstatusoutput('pacman -Q')
-localpac = packages[1]
-localpac = packages[1].splitlines()
+packages = open('installed.txt', 'r')
+localpac = packages.read()
+localpac = localpac.splitlines()
 packages = []
 localpacname = []
 update = []
@@ -24,8 +25,13 @@ for i in range(0, len(localpac)):
 
 #print
 #print localpacname
-for i in packages:
-    if i in localpacname:
-        print i
-print
-print update
+for package in packages:
+    rpack = package[:package.index(" ")]
+    #print blah,
+    if rpack in localpacname:
+        remote, local = package[:package.rindex(" ")], localpac[localpacname.index(rpack)]
+        #print remote, local
+        rvnum = remote[remote.rindex(" "):]
+        lvnum = local[local.rindex(" "):]
+        if lvnum != rvnum:
+            print rpack + " " + lvnum + " => " + rvnum
