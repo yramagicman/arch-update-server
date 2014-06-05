@@ -37,7 +37,7 @@ for package in packages:
             updates = updates + rpack + " " + lvnum + " => " + rvnum + "\n"
 if count == 0:
     n = pynotify.Notification("Move along, nothing to see here",
-    'No updates for today, you should still sudo pacman -Sy for \
+    'No updates for today, you should still\nsudo pacman -Sy for \
 older updates')
     n.show()
 else:
